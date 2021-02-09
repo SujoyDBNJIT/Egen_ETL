@@ -1,0 +1,10 @@
+1) Go to your terminal and type crontab -l
+This will list all the cron jobs scheduled
+2) Type crontab -e
+This will open a default vi editor
+3) type I for insert mode and schedule the cron job as following
+15 0 * * * /usr/bin/python3 egenV1.py >> output
+
+We have scheduled the job to take place at 12:15 AM everyday everymonth everyyear as in the description of the URL it was mentioned that database updates at 12:00 AM everyday, so we keep a buffer of 15 mins
+
+we can check scheduled job by crontab -l
