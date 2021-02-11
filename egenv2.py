@@ -14,6 +14,8 @@ import json
 import sqlite3
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
+import concurrent.futures
+
 
 # Fetching data from URL:
 def get_data(url):
@@ -32,13 +34,15 @@ def get_data(url):
       data = data['data']
       return data
 
+
 # setting up data for different counties into a dataframe
 def set_data(anylist):
     county = []
-    for l in anylist:
-        county_dict = {'County':l[9],"Test Date": l[8], "New Positives": l[10], "Cumulative Number of Positives": l[11], "Total Number of Tests Performed": l[12], "Cumulative Number of Tests Performed": l[13]}
-        county.append(county_dict)
-
+    for list in anylist:
+        for l in list:
+            county_dict = {'County':l[9],"Test Date": l[8], "New Positives": l[10], "Cumulative Number of Positives": l[11], "Total Number of Tests Performed": l[12], "Cumulative Number of Tests Performed": l[13]}
+            county.append(county_dict)
+    print(county)
     df = pd.DataFrame(county).groupby(['County'])
     return df
 
@@ -57,6 +61,7 @@ def load_database(df):
   database = r"sqlite\db\pythonsqlite.db"
   conn = create_connection(database)
   for d,df2 in df:
+    print(d,df2)
     df2 = df2.reset_index().drop(['index'], axis=1)
     df2.to_sql(d, conn, if_exists='replace')
     pd.set_option('display.max_columns', None)
@@ -73,15 +78,19 @@ def test_results():
 
 # defining the flow of the code
 def main():
-  serviceurl = 'https://health.data.ny.gov/api/views/xdss-u53e/rows.json?accessType=DOWNLOAD'
-  County_data = get_data(serviceurl)
-  dataframe = set_data(County_data)
-  LoadintoSQL = load_database(dataframe)
+    serviceurl = ['https://health.data.ny.gov/api/views/xdss-u53e/rows.json?accessType=DOWNLOAD']
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      c_data = executor.map(get_data, serviceurl)
+    County_data = []
+    for data in c_data:
+      County_data.append(data)
+    dataframe = set_data(County_data)
+    load_database(dataframe)
 
 if __name__=='__main__':
   main()
+
   ## If you need to test results for just Bronx county in db uncomment below line
-  
   # print("Test Results \n", test_results())
 
 

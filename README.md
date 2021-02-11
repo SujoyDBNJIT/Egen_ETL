@@ -23,7 +23,6 @@ please uncomment the print result under main function which will call the test_r
 
 
 Ways I can work forward to make this code better:
-1) Use Multi-threading using concurrent.futures and can decrease the time taken to pull data from URL.
-2) Work on Unit Testing using Pytest Library make a function using county name as input parameter check the output result if it is present in sqlite\db\pythonsqlite.db.
+1) Work on Unit Testing using Pytest Library make a function using county name as input parameter check the output result if it is present in sqlite\db\pythonsqlite.db.
 
 
