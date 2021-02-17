@@ -43,8 +43,8 @@ class Etl:
   def set_data(self, anylist):
     self.anylist = anylist
     county = []
-    for list in anylist:
-        for l in list:
+    for lst in anylist:
+        for l in lst:
             county_dict = {'County':l[9],"Test Date": l[8], "New Positives": l[10], "Cumulative Number of Positives": l[11], "Total Number of Tests Performed": l[12], "Cumulative Number of Tests Performed": l[13]}
             county.append(county_dict)
     print(county)
